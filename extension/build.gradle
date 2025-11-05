@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.github.segudev.bitwig'
+version = '0.1.0'
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Bitwig Extension API will be provided by Bitwig Studio at runtime
+    // No external dependencies needed
+}
+
+// Task to package the extension
+task packageExtension(type: Jar) {
+    from sourceSets.main.output
+    archiveBaseName = 'MouseWheelParameterControl'
+    archiveVersion = version
+    archiveExtension = 'bwextension'
+
+    manifest {
+        attributes(
+            'API-Version': '20'
+        )
+    }
+}
+
+// Make build depend on packageExtension
+build.dependsOn packageExtension
+
+// Configure Java compiler
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-Xlint:unchecked'
+    options.compilerArgs << '-Xlint:deprecation'
+}
+
+// Set output directory
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+}
